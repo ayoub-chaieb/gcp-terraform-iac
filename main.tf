@@ -21,7 +21,12 @@ resource "google_compute_network" "vpc_network" {
 resource "google_compute_instance" "vm_instance" {
     name         = "terraform-instance"
     machine_type = "e2-micro"
-    tags         = ["web", "dev"]
+    tags         = ["web", "dev"] 
+
+    provisioner "local-exec" {
+        command = "echo ${self.name}:  ${self.network_interface[0].access_config[0].nat_ip} >> ip_address.txt"
+    }
+
 
     boot_disk {
         initialize_params {
@@ -40,3 +45,4 @@ resource "google_compute_instance" "vm_instance" {
 resource "google_compute_address" "vm_static_ip" {
     name = "terraform-static-ip"
 }
+
