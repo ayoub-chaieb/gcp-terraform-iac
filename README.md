@@ -2,8 +2,6 @@
 
 Reproducible Google Cloud networking + compute, built incrementally with Terraform: VPC, VM instance, reserved static IP, resource dependencies and a `local-exec` provisioner.
 
-> **Transparency note:** This is a hands-on, scenario-based portfolio project, executed in a Google Cloud Skills Boost sandbox (lab **GSP750**, "Infrastructure as Code with Terraform"). The "engagement" below is a realistic scenario I used to structure the work. It is not a paid client project. Commit history was reconstructed from my recorded session so the progression is easy to follow. All logs and screenshots are from the real run.
-
 ## Scenario
 
 A small product team needed a **repeatable dev environment on GCP**: an isolated network, a VM with a fixed public IP, and an audit trail of what was created. Click-ops in the console was error-prone and undocumented, so the requirement was to manage everything as code.
