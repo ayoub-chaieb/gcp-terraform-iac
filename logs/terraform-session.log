@@ -1,0 +1,732 @@
+al1/addresses/terraform-static-ip]
+google_compute_instance.another_instance: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance-2]
+?
+| Error: Error reading Instance terraform-instance-2: googleapi: Error 401: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+| More details:
+| Reason: authError, Message: Invalid Credentials
+| 
+| 
+| 
+?
+?
+| Error: Error reading ComputeNetwork "projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network": googleapi: Error 401: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+| More details:
+| Reason: authError, Message: Invalid Credentials
+| 
+| 
+|   with google_compute_network.vpc_network,
+|   on main.tf line 17, in resource "google_compute_network" "vpc_network":
+|   17: resource "google_compute_network" "vpc_network" {
+| 
+?
+?
+| Error: Error reading ComputeAddress "projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/addresses/terraform-static-ip": googleapi: Error 401: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+| More details:
+| Reason: authError, Message: Invalid Credentials
+| 
+| 
+|   with google_compute_address.vm_static_ip,
+|   on main.tf line 41, in resource "google_compute_address" "vm_static_ip":
+|   41: resource "google_compute_address" "vm_static_ip" {
+| 
+?
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ history 
+    1  gcloud auth list
+    2  gcloud config list project
+    3  cat <<'EOF' >     ~/.customize_environment
+# Set up HashiCorp repository and \
+    install Terraform
+wget -O - \
+    https://apt.releases.hashicorp.com/gpg \
+    | sudo gpg --dearmor -o \
+    /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" \
+    | sudo tee \
+    /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt \
+    install -y terraform
+EOF
+
+    4  bash ~/.customize_environment
+    5  terraform -v
+    6  touch main.tf
+    7  terraform init
+    8  terraform apply
+    9  terraform show
+   10  terraform apply
+   11  terraform destroy
+   12  terraform apply
+   13  terraform plan
+   14  terraform plan -out static_ip
+   15  terraform apply "static_ip"
+   16  terraform plan
+   17  terraform apply
+   18  history 
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ terraform show
+# google_compute_address.vm_static_ip:
+resource "google_compute_address" "vm_static_ip" {
+    address            = "34.135.213.141"
+    address_type       = "EXTERNAL"
+    creation_timestamp = "2026-10-18T16:39:16.884-07:00"
+    description        = null
+    id                 = "projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/addresses/terraform-static-ip"
+    name               = "terraform-static-ip"
+    network_tier       = "PREMIUM"
+    project            = "qwiklabs-gcp-02-e97b910423c8"
+    purpose            = null
+    region             = "us-central1"
+    self_link          = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/addresses/terraform-static-ip"
+    subnetwork         = null
+    users              = [
+        "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance",
+    ]
+}
+
+# google_compute_instance.another_instance:
+resource "google_compute_instance" "another_instance" {
+    can_ip_forward          = false
+    cpu_platform            = "Intel Broadwell"
+    deletion_protection     = false
+    description             = null
+    enable_display          = false
+    guest_accelerator       = []
+    hostname                = null
+    id                      = "projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance-2"
+    instance_id             = "5908096812848834357"
+    label_fingerprint       = "42WmSpB8rSM="
+    machine_type            = "e2-micro"
+    metadata_fingerprint    = "Zl0P0xj9MK0="
+    metadata_startup_script = null
+    min_cpu_platform        = null
+    name                    = "terraform-instance-2"
+    project                 = "qwiklabs-gcp-02-e97b910423c8"
+    self_link               = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance-2"
+    tags_fingerprint        = "42WmSpB8rSM="
+    zone                    = "us-central1-b"
+
+    boot_disk {
+        auto_delete                = true
+        device_name                = "persistent-disk-0"
+        disk_encryption_key_raw    = (sensitive value)
+        disk_encryption_key_sha256 = null
+        kms_key_self_link          = null
+        mode                       = "READ_WRITE"
+        source                     = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/disks/terraform-instance-2"
+
+        initialize_params {
+            image  = "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/cos-stable-121-18867-638-5"
+            labels = {}
+            size   = 10
+            type   = "pd-standard"
+        }
+    }
+
+    network_interface {
+        name               = "nic0"
+        network            = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network"
+        network_ip         = "10.128.0.3"
+        subnetwork         = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/subnetworks/terraform-network"
+        subnetwork_project = "qwiklabs-gcp-02-e97b910423c8"
+
+        access_config {
+            nat_ip                 = "34.41.165.164"
+            network_tier           = "PREMIUM"
+            public_ptr_domain_name = null
+        }
+    }
+
+    scheduling {
+        automatic_restart   = true
+        on_host_maintenance = "MIGRATE"
+        preemptible         = false
+    }
+
+    shielded_instance_config {
+        enable_integrity_monitoring = true
+        enable_secure_boot          = false
+        enable_vtpm                 = true
+    }
+}
+
+# google_compute_instance.vm_instance:
+resource "google_compute_instance" "vm_instance" {
+    can_ip_forward          = false
+    cpu_platform            = "Intel Broadwell"
+    deletion_protection     = false
+    description             = null
+    enable_display          = false
+    guest_accelerator       = []
+    hostname                = null
+    id                      = "projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance"
+    instance_id             = "3641625493959666043"
+    label_fingerprint       = "42WmSpB8rSM="
+    labels                  = {}
+    machine_type            = "e2-micro"
+    metadata                = {}
+    metadata_fingerprint    = "Zl0P0xj9MK0="
+    metadata_startup_script = null
+    min_cpu_platform        = null
+    name                    = "terraform-instance"
+    project                 = "qwiklabs-gcp-02-e97b910423c8"
+    self_link               = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance"
+    tags                    = [
+        "dev",
+        "web",
+    ]
+    tags_fingerprint        = "XaeQnaHMn9Y="
+    zone                    = "us-central1-b"
+
+    boot_disk {
+        auto_delete                = true
+        device_name                = "persistent-disk-0"
+        disk_encryption_key_raw    = (sensitive value)
+        disk_encryption_key_sha256 = null
+        kms_key_self_link          = null
+        mode                       = "READ_WRITE"
+        source                     = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/disks/terraform-instance"
+
+        initialize_params {
+            image  = "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/cos-stable-121-18867-638-5"
+            labels = {}
+            size   = 10
+            type   = "pd-standard"
+        }
+    }
+
+    network_interface {
+        name               = "nic0"
+        network            = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network"
+        network_ip         = "10.128.0.2"
+        subnetwork         = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/subnetworks/terraform-network"
+        subnetwork_project = "qwiklabs-gcp-02-e97b910423c8"
+
+        access_config {
+            nat_ip                 = "34.135.213.141"
+            network_tier           = "PREMIUM"
+            public_ptr_domain_name = null
+        }
+    }
+
+    scheduling {
+        automatic_restart   = true
+        on_host_maintenance = "MIGRATE"
+        preemptible         = false
+    }
+
+    shielded_instance_config {
+        enable_integrity_monitoring = true
+        enable_secure_boot          = false
+        enable_vtpm                 = true
+    }
+}
+
+# google_compute_network.vpc_network:
+resource "google_compute_network" "vpc_network" {
+    auto_create_subnetworks         = true
+    delete_default_routes_on_create = false
+    description                     = null
+    gateway_ipv4                    = null
+    id                              = "projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network"
+    name                            = "terraform-network"
+    project                         = "qwiklabs-gcp-02-e97b910423c8"
+    routing_mode                    = "REGIONAL"
+    self_link                       = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network"
+}
+
+# google_storage_bucket.example_bucket:
+resource "google_storage_bucket" "example_bucket" {
+    bucket_policy_only = false
+    force_destroy      = false
+    id                 = "qwiklabs-gcp-02-e97b910423c8"
+    location           = "US"
+    name               = "qwiklabs-gcp-02-e97b910423c8"
+    project            = "qwiklabs-gcp-02-e97b910423c8"
+    requester_pays     = false
+    self_link          = "https://www.googleapis.com/storage/v1/b/qwiklabs-gcp-02-e97b910423c8"
+    storage_class      = "STANDARD"
+    url                = "gs://qwiklabs-gcp-02-e97b910423c8"
+
+    website {
+        main_page_suffix = "index.html"
+        not_found_page   = "404.html"
+    }
+}
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ ^C
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ terraform apply
+google_compute_network.vpc_network: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network]
+google_compute_address.vm_static_ip: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/addresses/terraform-static-ip]
+google_compute_instance.another_instance: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance-2]
+google_compute_instance.vm_instance: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+google_storage_bucket.example_bucket: Refreshing state... [id=qwiklabs-gcp-02-e97b910423c8]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated
+with the following symbols:
+  - destroy
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # google_compute_instance.another_instance will be destroyed
+  # (because google_compute_instance.another_instance is not in configuration)
+  - resource "google_compute_instance" "another_instance" {
+      - can_ip_forward          = false -> null
+      - cpu_platform            = "Intel Broadwell" -> null
+      - deletion_protection     = false -> null
+      - enable_display          = false -> null
+      - guest_accelerator       = [] -> null
+      - id                      = "projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance-2" -> null
+      - instance_id             = "5908096812848834357" -> null
+      - label_fingerprint       = "42WmSpB8rSM=" -> null
+      - labels                  = {} -> null
+      - machine_type            = "e2-micro" -> null
+      - metadata                = {} -> null
+      - metadata_fingerprint    = "Zl0P0xj9MK0=" -> null
+      - name                    = "terraform-instance-2" -> null
+      - project                 = "qwiklabs-gcp-02-e97b910423c8" -> null
+      - self_link               = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance-2" -> null
+      - tags                    = [] -> null
+      - tags_fingerprint        = "42WmSpB8rSM=" -> null
+      - zone                    = "us-central1-b" -> null
+        # (4 unchanged attributes hidden)
+
+      - boot_disk {
+          - auto_delete                = true -> null
+          - device_name                = "persistent-disk-0" -> null
+          - mode                       = "READ_WRITE" -> null
+          - source                     = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/disks/terraform-instance-2" -> null
+            # (3 unchanged attributes hidden)
+
+          - initialize_params {
+              - image  = "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/cos-stable-121-18867-638-5" -> null
+              - labels = {} -> null
+              - size   = 10 -> null
+              - type   = "pd-standard" -> null
+            }
+        }
+
+      - network_interface {
+          - name               = "nic0" -> null
+          - network            = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network" -> null
+          - network_ip         = "10.128.0.3" -> null
+          - subnetwork         = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/subnetworks/terraform-network" -> null
+          - subnetwork_project = "qwiklabs-gcp-02-e97b910423c8" -> null
+
+          - access_config {
+              - nat_ip                 = "34.41.165.164" -> null
+              - network_tier           = "PREMIUM" -> null
+                # (1 unchanged attribute hidden)
+            }
+        }
+
+      - scheduling {
+          - automatic_restart   = true -> null
+          - on_host_maintenance = "MIGRATE" -> null
+          - preemptible         = false -> null
+        }
+
+      - shielded_instance_config {
+          - enable_integrity_monitoring = true -> null
+          - enable_secure_boot          = false -> null
+          - enable_vtpm                 = true -> null
+        }
+    }
+
+  # google_compute_instance.vm_instance must be replaced
+-/+ resource "google_compute_instance" "vm_instance" {
+      ~ cpu_platform            = "Intel Broadwell" -> (known after apply)
+      - enable_display          = false -> null
+      ~ guest_accelerator       = [] -> (known after apply)
+      ~ id                      = "projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance" -> (known after apply)
+      ~ instance_id             = "3641625493959666043" -> (known after apply)
+      ~ label_fingerprint       = "42WmSpB8rSM=" -> (known after apply)
+      - labels                  = {} -> null
+      - metadata                = {} -> null
+      ~ metadata_fingerprint    = "Zl0P0xj9MK0=" -> (known after apply)
+      + min_cpu_platform        = (known after apply)
+        name                    = "terraform-instance"
+      ~ project                 = "qwiklabs-gcp-02-e97b910423c8" -> (known after apply)
+      ~ self_link               = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance" -> (known after apply)
+      - tags                    = [
+          - "dev",
+          - "web",
+        ] -> null
+      ~ tags_fingerprint        = "XaeQnaHMn9Y=" -> (known after apply)
+      ~ zone                    = "us-central1-b" -> (known after apply)
+        # (6 unchanged attributes hidden)
+
+      ~ boot_disk {
+          ~ device_name                = "persistent-disk-0" -> (known after apply)
+          + disk_encryption_key_sha256 = (known after apply)
+          + kms_key_self_link          = (known after apply)
+          ~ source                     = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/disks/terraform-instance" -> (known after apply)
+            # (3 unchanged attributes hidden)
+
+          ~ initialize_params {
+              ~ image  = "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/cos-stable-121-18867-638-5" -> "debian-cloud/debian-12" # forces replacement
+              ~ labels = {} -> (known after apply)
+              ~ size   = 10 -> (known after apply)
+              ~ type   = "pd-standard" -> (known after apply)
+            }
+        }
+
+      ~ network_interface {
+          ~ name               = "nic0" -> (known after apply)
+          ~ network            = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network" -> "terraform-network"
+          ~ network_ip         = "10.128.0.2" -> (known after apply)
+          ~ subnetwork         = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/subnetworks/terraform-network" -> (known after apply)
+          ~ subnetwork_project = "qwiklabs-gcp-02-e97b910423c8" -> (known after apply)
+
+          ~ access_config {
+              ~ nat_ip                 = "34.135.213.141" -> (known after apply)
+              ~ network_tier           = "PREMIUM" -> (known after apply)
+                # (1 unchanged attribute hidden)
+            }
+        }
+
+      ~ scheduling (known after apply)
+      - scheduling {
+          - automatic_restart   = true -> null
+          - on_host_maintenance = "MIGRATE" -> null
+          - preemptible         = false -> null
+        }
+
+      - shielded_instance_config {
+          - enable_integrity_monitoring = true -> null
+          - enable_secure_boot          = false -> null
+          - enable_vtpm                 = true -> null
+        }
+    }
+
+  # google_storage_bucket.example_bucket will be destroyed
+  # (because google_storage_bucket.example_bucket is not in configuration)
+  - resource "google_storage_bucket" "example_bucket" {
+      - bucket_policy_only = false -> null
+      - force_destroy      = false -> null
+      - id                 = "qwiklabs-gcp-02-e97b910423c8" -> null
+      - labels             = {} -> null
+      - location           = "US" -> null
+      - name               = "qwiklabs-gcp-02-e97b910423c8" -> null
+      - project            = "qwiklabs-gcp-02-e97b910423c8" -> null
+      - requester_pays     = false -> null
+      - self_link          = "https://www.googleapis.com/storage/v1/b/qwiklabs-gcp-02-e97b910423c8" -> null
+      - storage_class      = "STANDARD" -> null
+      - url                = "gs://qwiklabs-gcp-02-e97b910423c8" -> null
+
+      - website {
+          - main_page_suffix = "index.html" -> null
+          - not_found_page   = "404.html" -> null
+        }
+    }
+
+Plan: 1 to add, 0 to change, 3 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+google_compute_instance.another_instance: Destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance-2]
+google_compute_instance.vm_instance: Destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+google_compute_instance.vm_instance: Still destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/z...entral1-b/instances/terraform-instance, 00m10s elapsed]
+google_compute_instance.another_instance: Still destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/z...tral1-b/instances/terraform-instance-2, 00m10s elapsed]
+google_compute_instance.vm_instance: Destruction complete after 18s
+google_compute_instance.vm_instance: Creating...
+google_compute_instance.another_instance: Still destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/z...tral1-b/instances/terraform-instance-2, 00m20s elapsed]
+google_compute_instance.vm_instance: Still creating... [00m10s elapsed]
+google_compute_instance.another_instance: Destruction complete after 28s
+google_storage_bucket.example_bucket: Destroying... [id=qwiklabs-gcp-02-e97b910423c8]
+google_storage_bucket.example_bucket: Destruction complete after 1s
+google_compute_instance.vm_instance: Still creating... [00m20s elapsed]
+google_compute_instance.vm_instance: Creation complete after 22s [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+
+Apply complete! Resources: 1 added, 0 changed, 3 destroyed.
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$   tags         = ["web", "dev"] # Add this line
+^C
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ terraform apply
+google_compute_network.vpc_network: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network]
+google_compute_address.vm_static_ip: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/addresses/terraform-static-ip]
+google_compute_instance.vm_instance: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated
+with the following symbols:
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # google_compute_instance.vm_instance will be updated in-place
+  ~ resource "google_compute_instance" "vm_instance" {
+        id                      = "projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance"
+        name                    = "terraform-instance"
+      ~ tags                    = [
+          + "dev",
+          + "web",
+        ]
+        # (19 unchanged attributes hidden)
+
+        # (4 unchanged blocks hidden)
+    }
+
+Plan: 0 to add, 1 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+google_compute_instance.vm_instance: Modifying... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+google_compute_instance.vm_instance: Still modifying... [id=projects/qwiklabs-gcp-02-e97b910423c8/z...entral1-b/instances/terraform-instance, 00m10s elapsed]
+google_compute_instance.vm_instance: Modifications complete after 11s [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ ^C
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ terraform apply
+google_compute_network.vpc_network: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network]
+google_compute_address.vm_static_ip: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/addresses/terraform-static-ip]
+google_compute_instance.vm_instance: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated
+with the following symbols:
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # google_compute_instance.vm_instance must be replaced
+-/+ resource "google_compute_instance" "vm_instance" {
+      ~ cpu_platform            = "Intel Broadwell" -> (known after apply)
+      - enable_display          = false -> null
+      ~ guest_accelerator       = [] -> (known after apply)
+      ~ id                      = "projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance" -> (known after apply)
+      ~ instance_id             = "8928433676433810700" -> (known after apply)
+      ~ label_fingerprint       = "42WmSpB8rSM=" -> (known after apply)
+      - labels                  = {} -> null
+      - metadata                = {} -> null
+      ~ metadata_fingerprint    = "Zl0P0xj9MK0=" -> (known after apply)
+      + min_cpu_platform        = (known after apply)
+        name                    = "terraform-instance"
+      ~ project                 = "qwiklabs-gcp-02-e97b910423c8" -> (known after apply)
+      ~ self_link               = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance" -> (known after apply)
+        tags                    = [
+            "dev",
+            "web",
+        ]
+      ~ tags_fingerprint        = "XaeQnaHMn9Y=" -> (known after apply)
+      ~ zone                    = "us-central1-b" -> (known after apply)
+        # (6 unchanged attributes hidden)
+
+      ~ boot_disk {
+          ~ device_name                = "persistent-disk-0" -> (known after apply)
+          + disk_encryption_key_sha256 = (known after apply)
+          + kms_key_self_link          = (known after apply)
+          ~ source                     = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/disks/terraform-instance" -> (known after apply)
+            # (3 unchanged attributes hidden)
+
+          ~ initialize_params {
+              ~ image  = "https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-12-bookworm-v20261014" -> "cos-cloud/cos-stable" # forces replacement
+              ~ labels = {} -> (known after apply)
+              ~ size   = 10 -> (known after apply)
+              ~ type   = "pd-standard" -> (known after apply)
+            }
+        }
+
+      ~ network_interface {
+          ~ name               = "nic0" -> (known after apply)
+          ~ network            = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network" -> "terraform-network"
+          ~ network_ip         = "10.128.0.4" -> (known after apply)
+          ~ subnetwork         = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/subnetworks/terraform-network" -> (known after apply)
+          ~ subnetwork_project = "qwiklabs-gcp-02-e97b910423c8" -> (known after apply)
+
+          ~ access_config {
+              ~ nat_ip                 = "34.16.28.139" -> (known after apply)
+              ~ network_tier           = "PREMIUM" -> (known after apply)
+                # (1 unchanged attribute hidden)
+            }
+        }
+
+      ~ scheduling (known after apply)
+      - scheduling {
+          - automatic_restart   = true -> null
+          - on_host_maintenance = "MIGRATE" -> null
+          - preemptible         = false -> null
+        }
+
+      - shielded_instance_config {
+          - enable_integrity_monitoring = true -> null
+          - enable_secure_boot          = false -> null
+          - enable_vtpm                 = true -> null
+        }
+    }
+
+Plan: 1 to add, 0 to change, 1 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+google_compute_instance.vm_instance: Destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+google_compute_instance.vm_instance: Still destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/z...entral1-b/instances/terraform-instance, 00m10s elapsed]
+google_compute_instance.vm_instance: Still destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/z...entral1-b/instances/terraform-instance, 00m20s elapsed]
+google_compute_instance.vm_instance: Still destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/z...entral1-b/instances/terraform-instance, 00m30s elapsed]
+google_compute_instance.vm_instance: Still destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/z...entral1-b/instances/terraform-instance, 00m40s elapsed]
+google_compute_instance.vm_instance: Destruction complete after 50s
+google_compute_instance.vm_instance: Creating...
+google_compute_instance.vm_instance: Still creating... [00m10s elapsed]
+google_compute_instance.vm_instance: Creation complete after 14s [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+
+Apply complete! Resources: 1 added, 0 changed, 1 destroyed.
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ terraform apply
+google_compute_network.vpc_network: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network]
+google_compute_address.vm_static_ip: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/addresses/terraform-static-ip]
+google_compute_instance.vm_instance: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # google_compute_instance.vm_instance will be updated in-place
+  ~ resource "google_compute_instance" "vm_instance" {
+        id                      = "projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance"
+        name                    = "terraform-instance"
+        tags                    = [
+            "dev",
+            "web",
+        ]
+        # (19 unchanged attributes hidden)
+
+      ~ network_interface {
+            name               = "nic0"
+            # (4 unchanged attributes hidden)
+
+          ~ access_config {
+              ~ nat_ip                 = "34.41.165.164" -> "34.135.213.141"
+                # (2 unchanged attributes hidden)
+            }
+        }
+
+        # (3 unchanged blocks hidden)
+    }
+
+Plan: 0 to add, 1 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+google_compute_instance.vm_instance: Modifying... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+google_compute_instance.vm_instance: Still modifying... [id=projects/qwiklabs-gcp-02-e97b910423c8/z...entral1-b/instances/terraform-instance, 00m10s elapsed]
+google_compute_instance.vm_instance: Modifications complete after 15s [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ terraform apply
+google_compute_address.vm_static_ip: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/addresses/terraform-static-ip]
+google_compute_network.vpc_network: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network]
+google_compute_instance.vm_instance: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+
+No changes. Your infrastructure matches the configuration.
+
+Terraform has compared your real infrastructure against your configuration and found no differences, so no changes are needed.
+
+Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ terraform taint google_compute_instance.vm_instance
+Resource instance google_compute_instance.vm_instance has been marked as tainted.
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ terraform apply
+google_compute_network.vpc_network: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/global/networks/terraform-network]
+google_compute_address.vm_static_ip: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/addresses/terraform-static-ip]
+google_compute_instance.vm_instance: Refreshing state... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # google_compute_instance.vm_instance is tainted, so must be replaced
+-/+ resource "google_compute_instance" "vm_instance" {
+      ~ cpu_platform            = "Intel Broadwell" -> (known after apply)
+      - enable_display          = false -> null
+      ~ guest_accelerator       = [] -> (known after apply)
+      ~ id                      = "projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance" -> (known after apply)
+      ~ instance_id             = "6159443079309353562" -> (known after apply)
+      ~ label_fingerprint       = "42WmSpB8rSM=" -> (known after apply)
+      - labels                  = {} -> null
+      - metadata                = {} -> null
+      ~ metadata_fingerprint    = "Zl0P0xj9MK0=" -> (known after apply)
+      + min_cpu_platform        = (known after apply)
+        name                    = "terraform-instance"
+      ~ project                 = "qwiklabs-gcp-02-e97b910423c8" -> (known after apply)
+      ~ self_link               = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance" -> (known after apply)
+        tags                    = [
+            "dev",
+            "web",
+        ]
+      ~ tags_fingerprint        = "XaeQnaHMn9Y=" -> (known after apply)
+      ~ zone                    = "us-central1-b" -> (known after apply)
+        # (6 unchanged attributes hidden)
+
+      ~ boot_disk {
+          ~ device_name                = "persistent-disk-0" -> (known after apply)
+          + disk_encryption_key_sha256 = (known after apply)
+          + kms_key_self_link          = (known after apply)
+          ~ source                     = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/disks/terraform-instance" -> (known after apply)
+            # (3 unchanged attributes hidden)
+
+          ~ initialize_params {
+              ~ image  = "https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/cos-stable-121-18867-638-5" -> "cos-cloud/cos-stable"
+              ~ labels = {} -> (known after apply)
+              ~ size   = 10 -> (known after apply)
+              ~ type   = "pd-standard" -> (known after apply)
+            }
+        }
+
+      ~ network_interface {
+          ~ name               = "nic0" -> (known after apply)
+          ~ network_ip         = "10.128.0.5" -> (known after apply)
+          ~ subnetwork         = "https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-02-e97b910423c8/regions/us-central1/subnetworks/terraform-network" -> (known after apply)
+          ~ subnetwork_project = "qwiklabs-gcp-02-e97b910423c8" -> (known after apply)
+            # (1 unchanged attribute hidden)
+
+          ~ access_config {
+              ~ network_tier           = "PREMIUM" -> (known after apply)
+                # (2 unchanged attributes hidden)
+            }
+        }
+
+      ~ scheduling (known after apply)
+      - scheduling {
+          - automatic_restart   = true -> null
+          - on_host_maintenance = "MIGRATE" -> null
+          - preemptible         = false -> null
+        }
+
+      - shielded_instance_config {
+          - enable_integrity_monitoring = true -> null
+          - enable_secure_boot          = false -> null
+          - enable_vtpm                 = true -> null
+        }
+    }
+
+Plan: 1 to add, 0 to change, 1 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+google_compute_instance.vm_instance: Destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+google_compute_instance.vm_instance: Still destroying... [id=projects/qwiklabs-gcp-02-e97b910423c8/z...entral1-b/instances/terraform-instance, 00m10s elapsed]
+google_compute_instance.vm_instance: Destruction complete after 19s
+google_compute_instance.vm_instance: Creating...
+google_compute_instance.vm_instance: Still creating... [00m10s elapsed]
+google_compute_instance.vm_instance: Provisioning with 'local-exec'...
+google_compute_instance.vm_instance (local-exec): Executing: ["/bin/sh" "-c" "echo terraform-instance:  34.135.213.141 >> ip_address.txt"]
+google_compute_instance.vm_instance: Creation complete after 12s [id=projects/qwiklabs-gcp-02-e97b910423c8/zones/us-central1-b/instances/terraform-instance]
+
+Apply complete! Resources: 1 added, 0 changed, 1 destroyed.
+student@cloudshell:~ (qwiklabs-gcp-02-e97b910423c8)$ 
